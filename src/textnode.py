@@ -14,7 +14,11 @@ class TextNode():
         self.url = url
 
     def __eq__(self, value):
-        return isinstance(value,TextNode)
+        #If not even a text node why even bother?
+        if not isinstance(value,TextNode): return False
+
+        #Comparing all properties between themselves :)
+        return self.text == value.text and self.text_type == value.text_type and self.url == value.url
 
     def __repr__(self):
         return f"TextNode({self.text}, {self.text_type.value}, {self.url})"
