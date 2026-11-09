@@ -35,10 +35,7 @@ class HTMLNode():
 
 class LeafNode(HTMLNode):
     def __init__(self,tag:str,value:str,props:dict = None) -> None:
-            self.tag = tag
-            self.value = value
-            self.props = props
-            super(LeafNode,self).__init__(self.tag,self.value,None,self.props)
+            super().__init__(tag,value,None,props)
 
     def to_html(self) -> str:
             if self.value == "":
@@ -59,3 +56,20 @@ class LeafNode(HTMLNode):
         value = f"Value -> {self.value} \n"
         props = f"Props -> {self.props} \n"
         return tag + value + props
+
+class ParentNode(HTMLNode):
+    def __init__(self, tag:str,children:dict,  props = None):
+        super().__init__(tag, None, children, props)
+
+    def to_html(self) -> str:
+        if self.tag is None: raise ValueError("Element must havalue assigned")
+
+        if self.children is None: raise ValueError("Elemeent must have children")
+
+        central_elements = ""
+
+        for element in self.children:
+             central_elements += element.to_html()
+
+        return f"<{self.tag}>{central_elements}</{self.tag}>"
+        
