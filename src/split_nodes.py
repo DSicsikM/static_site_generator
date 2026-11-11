@@ -3,10 +3,8 @@ from textnode import TextNode,TextType
 def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: TextType) -> list[TextNode]:
     out_nodes: list[TextNode] = list()
     for node in old_nodes:
-        if node.text_type != TextType.TEXT:
+        if node.text_type != TextType.TEXT or delimiter not in node.text:
             out_nodes.append(node)
-        if delimiter not in node.text:
-            raise Exception("The provided delimiter was not found in the nodes")
         else:
             blocks = node.text.split(delimiter)
             transform = False
@@ -17,4 +15,4 @@ def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: 
                 else:
                     out_nodes.append(TextNode(block,text_type))
                     transform = False
-        return out_nodes
+    return out_nodes
