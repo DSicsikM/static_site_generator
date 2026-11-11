@@ -1,5 +1,12 @@
 import unittest
-from regex_utilities import extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link, text_to_textnodes
+from regex_utilities import (
+    extract_markdown_images, 
+    extract_markdown_links, 
+    split_nodes_image, 
+    split_nodes_link, 
+    text_to_textnodes,
+    split_nodes_delimiter
+)
 from textnode import TextNode, TextType
 
 class TestRegexUtilities(unittest.TestCase):
@@ -141,6 +148,19 @@ class TestRegexUtilities(unittest.TestCase):
         ]
         nodes = text_to_textnodes("This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)")
         self.assertEqual(nodes,correct_transformation)
+
+    def test_delim_bold_and_italic(self):
+        node = TextNode("**bold** and _italic_", TextType.TEXT)
+        new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
+        new_nodes = split_nodes_delimiter(new_nodes, "_", TextType.ITALIC)
+        self.assertEqual(
+            [
+                TextNode("bold", TextType.BOLD),
+                TextNode(" and ", TextType.TEXT),
+                TextNode("italic", TextType.ITALIC),
+            ],
+            new_nodes,
+        )
         
 if __name__ == "__main__":
     unittest.main()
