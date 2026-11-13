@@ -1,5 +1,5 @@
 import unittest
-from block_management import markdown_to_blocks
+from block_management import block_to_block_type, markdown_to_blocks
 
 class TestMarkdownToBlocks(unittest.TestCase):
     def test_markdown_to_blocks(self):
@@ -38,6 +38,19 @@ This is a paragraph of text. It has some **bold** and _italic_ words inside of i
                         ]
             self.assertEqual(list(correct_transformation),list(blocks))
 
+    def test_block_to_block_type(self):
+        test_cases = [
+            ("This is a paragraph", "PARAGRAPH"),
+            ("# This is a heading", "HEADING"),
+            ("```\nThis is code\n```", "CODE"),
+            ("> This is a quote", "QUOTE"),
+            ("- This is an unordered list item", "UNORDERED_LIST"),
+            ("1. This is an ordered list item", "ORDERED_LIST"),
+        ]
+        for block, expected_type in test_cases:
+            with self.subTest(block=block):
+                block_type = block_to_block_type(block)
+                self.assertEqual(block_type.name, expected_type)
 
 if __name__ == "__main__":
     unittest.main()
