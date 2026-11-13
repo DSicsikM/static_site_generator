@@ -11,7 +11,10 @@ class BlockType(Enum):
 
 def markdown_to_blocks(markdown: str) -> list[str]:
     outList = markdown.split("\n\n")
-    outList = map(lambda x: x.strip(), outList )
+    outList = list(map(lambda x: x.strip(), outList ))
+    for element in outList:
+        if element == "":
+            outList.remove(element)
 
     return outList
 
