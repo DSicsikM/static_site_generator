@@ -48,7 +48,7 @@ class LeafNode(HTMLNode):
             if self.props is not None:
                 for elem in self.props:
                     props += f" {elem}=\"{self.props[elem]}\""
-
+            
             return f"<{self.tag}{props}>{self.value}</{self.tag}>"
 
     def __repr__(self):
