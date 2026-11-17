@@ -24,9 +24,7 @@ def block_to_block_type(block: str) -> BlockType:
     if heading:
         return BlockType.HEADING
 
-    code = len(re.findall(r"```\n.+\n```", block)) > 0
-
-    if code:
+    if block.startswith("```\n") and block.endswith("\n```"):
         return BlockType.CODE
 
     quote = len(re.findall(r">.+\S+", block)) > 0

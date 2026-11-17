@@ -43,6 +43,7 @@ This is a paragraph of text. It has some **bold** and _italic_ words inside of i
             ("This is a paragraph", "PARAGRAPH"),
             ("# This is a heading", "HEADING"),
             ("```\nThis is code\n```", "CODE"),
+            ("```\nThis is the first line\nAnd the second line\n```", "CODE"),
             ("> This is a quote", "QUOTE"),
             ("- This is an unordered list item", "UNORDERED_LIST"),
             ("1. This is an ordered list item", "ORDERED_LIST"),
