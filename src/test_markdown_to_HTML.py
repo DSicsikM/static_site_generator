@@ -60,6 +60,47 @@ the **same** even with inline stuff
             "<div><p>A <code>code</code> span</p></div>",
         )
 
+    def test_unordered_list_renders_each_item(self):
+        markdown = "- First item\n- **Second** item"
+
+        self.assertEqual(
+            markdown_to_html_node(markdown).to_html(),
+            "<div><ul><li>First item</li><li><b>Second</b> item</li></ul></div>",
+        )
+
+    def test_ordered_list_renders_each_item(self):
+        markdown = "1. First item\n2. **Second** item"
+
+        self.assertEqual(
+            markdown_to_html_node(markdown).to_html(),
+            "<div><ol><li>First item</li><li><b>Second</b> item</li></ol></div>",
+        )
+
+    def test_quote_renders_as_blockquote(self):
+        markdown = "> A quoted **statement**."
+
+        self.assertEqual(
+            markdown_to_html_node(markdown).to_html(),
+            "<div><blockquote>A quoted <b>statement</b>.</blockquote></div>",
+        )
+
+    def test_heading_levels_one_through_six(self):
+        markdown = (
+            "# Heading one\n\n"
+            "## Heading two\n\n"
+            "### Heading three\n\n"
+            "#### Heading four\n\n"
+            "##### Heading five\n\n"
+            "###### Heading six"
+        )
+
+        self.assertEqual(
+            markdown_to_html_node(markdown).to_html(),
+            "<div><h1>Heading one</h1><h2>Heading two</h2>"
+            "<h3>Heading three</h3><h4>Heading four</h4>"
+            "<h5>Heading five</h5><h6>Heading six</h6></div>",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

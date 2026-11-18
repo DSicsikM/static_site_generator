@@ -7,6 +7,7 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
     outParentNode = ParentNode("div", [], None)
     blocks = markdown_to_blocks(markdown)
     for block in blocks:
+        print(f"Block: {block} | Type: {block_to_block_type(block)}")
         if block_to_block_type(block) == BlockType.CODE:
             code = block[4:-3]
             code_children = [LeafNode(None, code)] if code else []
@@ -14,42 +15,61 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
             outParentNode.children.append(ParentNode("pre", [code_node]))
             continue
 
-        children = [
-            text_node_to_html_node(text_node)
-            for text_node in text_to_textnodes(block)
-        ]
-        outParentNode.children.append(ParentNode("p", children))
+        elif block_to_block_type(block) == BlockType.QUOTE:
+            quote = block[2:]
+            quote_children = [
+                text_node_to_html_node(text_node)
+                for text_node in text_to_textnodes(quote)
+            ]
+            outParentNode.children.append(ParentNode("blockquote", quote_children))
+            continue
+
+        elif block_to_block_type(block) == BlockType.UNORDERED_LIST:
+            list_items = block.split("\n")
+            list_children = []
+            for item in list_items:
+                item_text = item[2:]
+                item_children = [
+                    text_node_to_html_node(text_node)
+                    for text_node in text_to_textnodes(item_text)
+                ]
+                list_children.append(ParentNode("li", item_children))
+            outParentNode.children.append(ParentNode("ul", list_children))
+            continue
+
+        elif block_to_block_type(block) == BlockType.ORDERED_LIST:
+            list_items = block.split("\n")
+            list_children = []
+            for item in list_items:
+                item_text = item[3:]
+                item_children = [
+                    text_node_to_html_node(text_node)
+                    for text_node in text_to_textnodes(item_text)
+                ]
+                list_children.append(ParentNode("li", item_children))
+            outParentNode.children.append(ParentNode("ol", list_children))
+            continue
+
+        elif block_to_block_type(block) == BlockType.HEADING:
+            heading_level = len(block.split(" ")[0])
+            heading_text = block[heading_level + 1:]
+            heading_children = [
+                text_node_to_html_node(text_node)
+                for text_node in text_to_textnodes(heading_text)
+            ]
+            outParentNode.children.append(
+                ParentNode(f"h{heading_level}", heading_children)
+            )
+            continue
+
+        elif block_to_block_type(block) == BlockType.PARAGRAPH:
+            children = [
+                text_node_to_html_node(text_node)
+                for text_node in text_to_textnodes(block)
+            ]
+            outParentNode.children.append(ParentNode("p", children))
+
+        else:
+            raise Exception(f"Block type not recognized ------- <{block_to_block_type(block)}>")
 
     return outParentNode
-
-if __name__ == "__main__":
-    md = """
-This is **bolded** paragraph text in a p tag here
-
-This is another paragraph with _italic_ text and `code` here
-
-"""
-
-    temp = "<div><p>This is <b>bolded</b> paragraph text in a p tag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>"
-
-    node = markdown_to_html_node(md)
-    html = node.to_html()
-    print(html)
-    print(temp)
-    print("Does the html match? ", html == temp)
-
-
-    md = """
-```
-This is text that _should_ remain
-the **same** even with inline stuff
-```
-"""
-
-    temp = "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>"
-
-    node = markdown_to_html_node(md)
-    html = node.to_html()
-    print(html)
-    print(temp)
-    print("Does the html match? ", html == temp)
