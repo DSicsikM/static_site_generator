@@ -7,7 +7,6 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
     outParentNode = ParentNode("div", [], None)
     blocks = markdown_to_blocks(markdown)
     for block in blocks:
-        print(f"Block: {block} | Type: {block_to_block_type(block)}")
         if block_to_block_type(block) == BlockType.CODE:
             code = block[4:-3]
             code_children = [LeafNode(None, code)] if code else []
